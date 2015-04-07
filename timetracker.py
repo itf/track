@@ -183,7 +183,10 @@ class app_info():
         return (self._wndtitle, self._category, self._count, self._cmdline)
 
     def generate_identifier(self):
-        return self._wndtitle
+        _result = self._wndtitle
+        if _result.startswith('*') and 'gedit' in _result:
+            _result = _result[1:]
+        return _result
 
 
 class minute():
