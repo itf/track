@@ -5,7 +5,7 @@ import sys
 import signal
 import logging
 import os.path
-
+import json
 import track_qt
 
     
@@ -19,7 +19,9 @@ except:
 
 import track_common
 
+
 class track_ui(QtGui.QMainWindow):
+    password_file= "password"
 
     def __init__(self):
         super(track_ui, self).__init__()
@@ -59,6 +61,7 @@ class track_ui(QtGui.QMainWindow):
         self.pb_save.clicked.connect(self.pb_save_clicked)
         self.pb_load.clicked.connect(self.pb_load_clicked)
         self.pb_regex.clicked.connect(self.pb_regex_clicked)
+        self.pb_submit_data.clicked.connect(self.submit_data)
         _idle_timer.start(1000)
 
     def pb_save_clicked(self):
@@ -120,6 +123,40 @@ class track_ui(QtGui.QMainWindow):
         print("cleanup")
         self._tracker.save()
 
+    def submit_data(self):
+        try:
+            username, password=self.load_password()
+            print username
+            print password
+            self._tracker.submit_data(username, password)
+        except:
+            username, ok = QtGui.QInputDialog.getText(QtGui.QDialog(), "Login",
+                    "Kerberos:", QtGui.QLineEdit.Normal,
+                    "")
+            if ok:
+                    password, ok = QtGui.QInputDialog.getText(QtGui.QDialog(), "Login",
+                    "password:", QtGui.QLineEdit.Normal,
+                    "")
+                    if ok:
+                        question = "Do you want to save you username and password?"
+                        response = QtGui.QMessageBox.information(self, 'Save?',
+                                                                 question, QtGui.QMessageBox.No |
+                                                                 QtGui.QMessageBox.Yes)
+                        if response == QtGui.QMessageBox.Yes:
+                            self.save_password(str(username),str(password))    
+                        self._tracker.submit_data(str(username), str(password))
+    def save_password(self, username, password):
+        _file_name = self.password_file
+        with open(_file_name, 'w') as _file:
+            json.dump([username, password], _file,
+                      sort_keys=False)
+    #Throws exception
+    def load_password(self):
+        _file_name = self.password_file
+        with open(_file_name) as _file:
+            _struct = json.load(_file)
+        user_pass = _struct;
+        return user_pass
 
 def sigint_handler(s, window):
     sig_name = "unknown"

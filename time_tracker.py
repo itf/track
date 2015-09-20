@@ -2,6 +2,7 @@ from desktop_usage_info import idle
 from desktop_usage_info import applicationinfo
 import logging
 import track_common
+import submit_mit
 
 #import active_applications
 import track_qt
@@ -38,6 +39,7 @@ class time_tracker():
     def clear(self):
         # must not be overwritten - we need the instance
         self._applications.clear()
+        submit_mit.clear()
 
     def load(self, filename=None):
         _file_name = filename if filename else "track-%s.json" % track_common.today_str()
@@ -139,13 +141,13 @@ class time_tracker():
     def get_time_work(self):
         r = 0
         for i, m in self._applications._minutes.items():
-            r += 1 if m._category == 0 else 0
+            r += 1 if str(m._category) != "0" else 0
         return r
 
     def get_time_private(self):
         r = 0
         for i, m in self._applications._minutes.items():
-            r += m._category != 0
+            r += str(m._category) == "0"
         return r
 
     def get_time_idle(self):
@@ -174,3 +176,19 @@ class time_tracker():
 
     def new_regex_rule(self):
         self._rules.add_rule()
+
+    def submit_data(self, username, password):
+        user = submit_mit.mit_submit_utils.get_user(username, password)
+        punt = self.get_time_private()
+        tool =self.get_time_work()
+
+        try:
+            old_punt, old_tool = submit_mit.mit_submit_utils.get_last_submit()
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
+            old_punt, old_tool = [0,0]
+        submit_mit.mit_submit_utils.save_last_submit([punt,tool])
+        user.punting+=punt-old_punt
+        user.tooling+=tool-old_tool
+        user.save()
