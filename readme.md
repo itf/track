@@ -38,7 +38,10 @@ information already.
 * Linux (Windows coming soon)
 * Python 2.7 (Python 3 coming soon)
 * PyQt4
-* python-libwnck
+* python-wnck
+pip install git+https://github.com/dgrtwo/ParsePy.git
+apt-get install python-pip
+
 
 
 ### how to run
