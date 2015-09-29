@@ -260,4 +260,4 @@ class active_applications_qtmodel(qt_common.matrix_table_model):
 
     def flags(self, index):
             return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable |QtCore.Qt.ItemIsDragEnabled
-        
+

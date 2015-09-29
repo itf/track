@@ -28,19 +28,17 @@ class rules_model(qt_common.matrix_table_model):
         return 3
 
     def rowCount(self, parent):
-        return len(self._rules) + 1
+        return len(self._rules)
 
     #used by QT to display the data
     def _data(self, row, column):  # const
-        if row == 0:
-            return(None, ' - add new - ', None)[column]
         if column == 0:
-            if len(self._matching) >= row and self._matching[row - 1]:
+            if len(self._matching) >= row+1 and self._matching[row]:
                 return 'X' 
         if column == 1:
-            return self._rules[row - 1][0]
+            return self._rules[row][0]
         if column == 2:
-            return self._rules[row - 1][1]
+            return self._rules[row][1]
         return None
     
     def __data__(self):  # const
@@ -76,11 +74,11 @@ class rules_model(qt_common.matrix_table_model):
             except re.error:
                 is_valid = False
             if(is_valid):
-                self._rules[index.row()-1][index.column()-1] = str(value.toString())
+                self._rules[index.row()][index.column()-1] = str(value.toString())
                 self.modified_rules.emit()
                 self.save_to_disk()
             else:
-                self._rules[index.row()-1][index.column()-1] = "invalid regex"
+                self._rules[index.row()][index.column()-1] = "invalid regex"
         return True
     def flags(self, index):
         if (self.isEditable(index)):

@@ -153,7 +153,7 @@ class minute():
         self._category = _categories.keys()[
                                 _categories.values().index(
                                     max(_categories.values()))]
-        # print(self._category)
+        #print(self._category)
 
     def add(self, app_instance):
         if app_instance not in self._apps:
@@ -168,5 +168,6 @@ class minute():
 
     def rebuild_categories(self, get_category):
         for a, c in self._apps.items():
-            a.set_new_category(get_category(a))
+            a.set_new_category(get_category(a)) 
         self._rebuild()
+
