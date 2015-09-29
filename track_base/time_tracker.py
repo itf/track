@@ -1,3 +1,4 @@
+<<<<<<< HEAD:track_base/time_tracker.py
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
@@ -9,6 +10,18 @@ from desktop_usage_info import applicationinfo
 
 import track_base
 import track_common
+=======
+from desktop_usage_info import idle
+from desktop_usage_info import applicationinfo
+import logging
+import track_common
+
+#import active_applications
+import track_qt
+#import rules_model
+from PyQt4.QtCore import pyqtSlot
+import json
+>>>>>>> 2213a6a47ebaa10dde32c157208b591f0b87ce64:time_tracker.py
 
 class time_tracker():
     """ * retrieves system data
@@ -26,10 +39,19 @@ class time_tracker():
         
 
         # -- persist
+<<<<<<< HEAD:track_base/time_tracker.py
         self._applications = track_base.active_applications()
         self._rules = track_base.rules_model()
 
         #self._rules.modified_rules.connect(self.update_categories)
+=======
+        self._applications = track_qt.active_applications(parent)
+        
+        self._rules = track_qt.rules_model(parent)
+>>>>>>> 2213a6a47ebaa10dde32c157208b591f0b87ce64:time_tracker.py
+
+        self._rules.modified_rules.connect(self.update_categories)
+
 
     def __eq__(self, other):
         return False
@@ -90,9 +112,14 @@ class time_tracker():
             self._current_app_title = applicationinfo.get_active_window_title()
             try:
                 self._current_process_exe = applicationinfo.get_active_process_name()
+<<<<<<< HEAD:track_base/time_tracker.py
             except applicationinfo.UncriticalException as e: #necessary to run in i3
                 self._current_process_exe = "Process not found"
                 
+=======
+            except applicationinfo.UncriticalException as e: #necessary for i3
+                self._current_process_exe = "Process not found"
+>>>>>>> 2213a6a47ebaa10dde32c157208b591f0b87ce64:time_tracker.py
             self._rules.highlight_string(self._current_app_title)
 
             if self._idle_current > 10:
@@ -101,7 +128,7 @@ class time_tracker():
 
             _app = track_common.app_info(self._current_app_title, 
                             self._current_process_exe)
-            _app._category = self._rules.get_first_matching_key(_app)
+            _app.set_new_category(self._rules.get_first_matching_key(_app))
 
             _app = self._applications.update(
                         self._current_minute,
@@ -168,9 +195,17 @@ class time_tracker():
 
     def user_is_active(self):
         return self._user_is_active
+    @pyqtSlot()
+    def update_categories(self):
+        self._applications.update_all_categories(self._rules.get_first_matching_key)
 
+<<<<<<< HEAD:track_base/time_tracker.py
     # def update_categories(self):
     #    self._applications.update_all_categories(self._rules.get_first_matching_key)
 
     #def new_regex_rule(self):
     #    self._rules.add_rule()
+=======
+    def new_regex_rule(self):
+        self._rules.add_rule()
+>>>>>>> 2213a6a47ebaa10dde32c157208b591f0b87ce64:time_tracker.py

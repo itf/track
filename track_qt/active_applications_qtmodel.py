@@ -3,7 +3,6 @@
 
 from PyQt4 import QtCore #, Qt, uic, QtGui
 from PyQt4.QtCore import pyqtSlot
-
 #import json
 #import operator
 #import re
@@ -11,6 +10,7 @@ from PyQt4.QtCore import pyqtSlot
 #from desktop_usage_info import idle
 #from desktop_usage_info import applicationinfo
 import track_common
+import qt_common
 import track_qt
 import qt_common
 
@@ -163,19 +163,12 @@ class active_applications_qtmodel(qt_common.matrix_table_model):
 
     def update(self, minute_index, app):
         with track_qt.change_emitter(self):
-        
             _app_id = app.generate_identifier()
-
             if _app_id not in self._apps:
                 self._apps[_app_id] = app
-#                if "Firefox" in _app_id:
-#                    app._category = 1
-#                else:
-#                    app._category = 0
-            # print([a._category for a in self._apps.values()])
             _app = self._apps[_app_id]
-            _app._count += 1
-
+            _app.set_new_category(app.get_category())
+            _app._count += 1 #seconds using the app
             if minute_index not in self._minutes:
                 self._minutes[minute_index] = track_common.minute()
                 if not self._index_min or self._index_min > minute_index:
@@ -187,7 +180,7 @@ class active_applications_qtmodel(qt_common.matrix_table_model):
             self._minutes[minute_index].add(_app)
 
             self._sort()
-
+            
             # self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
 
     def get_chunk_size(self, minute):
@@ -258,7 +251,6 @@ class active_applications_qtmodel(qt_common.matrix_table_model):
         # print(' '.join(reversed(["(%d: %d)" % (s, m._category)
         #                for s, m in self._minutes.items()])))
         return str(self._minutes[minute]._category) == "0"
-
     @pyqtSlot()
     def update_all_categories(self, get_category_from_app):
         for i in self._apps:

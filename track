@@ -8,7 +8,7 @@ import os.path
 
 import track_qt
 
-
+    
 try:
     from PyQt4 import QtGui, QtCore, Qt, uic
 except:
@@ -56,6 +56,7 @@ class track_ui(QtGui.QMainWindow):
         self.tbl_category_rules.setDragDropOverwriteMode(False)
         
         self.show()
+
 
     def initUI(self):
         trackui_path = os.path.join(self.directory, 'track.ui')
@@ -120,7 +121,7 @@ class track_ui(QtGui.QMainWindow):
 
     def pb_regex_clicked(self):
         self._tracker.new_regex_rule()
-        
+
     def update_idle(self):
         self._tracker.update()
         _idle = self._tracker.get_idle()

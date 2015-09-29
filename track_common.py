@@ -95,6 +95,9 @@ class app_info():
     def __data__(self):  # const
         return (self._wndtitle, self._category, self._count, self._cmdline)
 
+    def get_name(self):
+        return self._wndtitle
+
     def get_category(self):
         return self._category
         
@@ -103,6 +106,7 @@ class app_info():
 
     def get_count(self):
         return self._count
+
 
 class minute():
     """ a minute holds a category and a list of apps
